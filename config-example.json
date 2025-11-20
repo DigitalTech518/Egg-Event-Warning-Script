@@ -1,0 +1,27 @@
+{
+
+    "API": "xxx",
+    "EID": "EI0123456...",
+    "ntfyURL": "xxx",
+    "ntfyThread": "Thread Name",
+    "ntfyUser": "User",
+    "ntfyPass": "Pass",
+    "urgentTypes": [
+        "piggy-cap-boost",
+        "mission-duration",
+        "More event types here..."
+    ],
+    "urgentNames": [
+        "TRIPLE PRESTIGE",
+        "More event subtitles here..."
+    ],
+    "importantTypes": [
+        "mission-capacity",
+        "gift-boost",
+        "etc..."
+    ],
+    "importantNames": [
+        "etc..."
+    ]
+
+}
