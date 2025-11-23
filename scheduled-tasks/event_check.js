@@ -38,7 +38,17 @@ async function event_check(url, eid, Events) {
             const Authorization = Buffer.from(config.ntfyUser + ":" + config.ntfyPass).toString('base64');
 
             /* Post event data to ntfy */
-            axios.post(`${config.ntfyURL}/${config.ntfyThread}`, `New Event Type: \`${event.type}\``, {
+
+            /* Define body string depending on ultra status */
+            let body = ``;
+
+            if (event.ccOnly) {
+
+                body = `New ULTRA Event Type: \`${event.type}\``;
+
+            } else body = `New Event Type: \`${event.type}\``;
+
+            axios.post(`${config.ntfyURL}/${config.ntfyThread}`, body, {
 
                 headers: {
                     "Authorization": `Basic ${Authorization}`,
@@ -64,7 +74,7 @@ async function event_check(url, eid, Events) {
             await Event.save().catch((error) => console.error("Error saving to mongodb", error));
 
 
-        } else console.log(moment().format('MMMM Do YYYY, h:mm:ssa'), event.subtitle, "started more than a minute ago"); // Log when event detected was too long ago
+        } else console.log(moment().format('MMMM Do YYYY, h:mm:ssa'), event.subtitle, "already notified"); // Log when event detected was too long ago
 
     });
 
