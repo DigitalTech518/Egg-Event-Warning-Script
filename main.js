@@ -1,8 +1,8 @@
 const config = require("./config.json"); // Import config data
 const cron = require('node-cron'); // Import lib to run script every x time, easier to set and forget
 const moment = require('moment');  // Import moment lib
-const event_task = require('./scheduled-tasks/event_check');
-const intilizeDatabase = require('./scheduled-tasks/database');
+const event_task = require('./scheduled-tasks/event_check'); // Import Event Task
+const intilizeDatabase = require('./scheduled-tasks/database'); // Import Database Task
 
 async function main() {
 

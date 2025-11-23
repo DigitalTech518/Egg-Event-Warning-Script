@@ -3,7 +3,7 @@ const config = require("../config.json"); // Config shit
 
 async function intilizeDatabase() {
 
-    const uri = `mongodb://${config.dbUser}:${config.dbPass}@100.117.169.96:27017/EggTesting`; // Connect to DB (localhost should work?)
+    const uri = `mongodb://${config.dbUser}:${config.dbPass}@localhost:27017/EggTesting`; // Connect to DB (localhost should work?)
 
     await mongoose.connect(uri).then(console.log("Connected")).catch((error) => console.error("Mongoose no worky", error)); // Connect
 
@@ -19,7 +19,7 @@ async function intilizeDatabase() {
 
     const Events = mongoose.model("Event", eventSchema); // Insert event schema into mongoose model
 
-    return Events;
+    return Events; // Return event model
 }
 
 module.exports = intilizeDatabase;

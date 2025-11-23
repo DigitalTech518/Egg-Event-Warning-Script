@@ -1,7 +1,6 @@
 const config = require("../config.json"); // Import config data
 const moment = require('moment');  // Import moment lib
 const axios = require('axios'); // Import axios package since I don't want to mess with node version
-const mongoose = require('mongoose'); // Mongoose shit
 
 
 async function event_check(url, eid, Events) {
@@ -15,7 +14,7 @@ async function event_check(url, eid, Events) {
     /* Map through current events */
     await data.events.eventsList.map(async event => {
 
-
+        // If event identifier not in database
         if (!(SentEvents.includes(event.identifier))) {
 
 
