@@ -3,7 +3,7 @@ const config = require("../config.json"); // Config shit
 
 async function intilizeDatabase() {
 
-    const uri = `mongodb://${config.dbUser}:${config.dbPass}@localhost:27017/EggTesting`; // Connect to DB (localhost should work?)
+    const uri = `mongodb://${config.dbUser}:${config.dbPass}@localhost:27017/EggTesting`; // String to connect to DB (localhost should work?)
 
     await mongoose.connect(uri).then(console.log("Connected")).catch((error) => console.error("Mongoose no worky", error)); // Connect
 
