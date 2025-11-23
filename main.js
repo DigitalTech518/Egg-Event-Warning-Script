@@ -2,21 +2,25 @@ const config = require("./config.json"); // Import config data
 const cron = require('node-cron'); // Import lib to run script every x time, easier to set and forget
 const moment = require('moment');  // Import moment lib
 const event_task = require('./scheduled-tasks/event_check');
+const intilizeDatabase = require('./scheduled-tasks/database');
 
-function main() {
+async function main() {
+
+    const Events = await intilizeDatabase().catch((error) => console.error("Error running intilize database", error)); // Intilize Database and get Event Model
 
     console.log(moment().format('MMMM Do YYYY, h:mm:ssa'), "Running task before scheduling..."); 
 
-    event_task(config.API, config.EID).catch(error => console.error("Error running fetch:", error)); //Run the fucker before scheduling
+    event_task(config.API, config.EID, Events).catch(error => console.error("Error running fetch:", error)); //Run the fucker before scheduling
 
     console.log(moment().format('MMMM Do YYYY, h:mm:ssa'), "Scheduling task to run every minute...");
 
     cron.schedule('*/1 * * * *', () => { // Run at every minute
     
-        event_task(config.API, config.EID).catch(error => console.error("Error running fetch:", error)); //Run the fucker every minute
+        event_task(config.API, config.EID, Events).catch(error => console.error("Error running fetch:", error)); //Run the fucker every minute
 
     });
     
 }
 
-main();
+
+main().catch((error) => console.error("Errored while running main", error));

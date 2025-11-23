@@ -1,0 +1,25 @@
+const mongoose = require('mongoose'); // Using mongoose to interact with MongoDB
+const config = require("../config.json"); // Config shit
+
+async function intilizeDatabase() {
+
+    const uri = `mongodb://${config.dbUser}:${config.dbPass}@100.117.169.96:27017/EggTesting`; // Connect to DB (localhost should work?)
+
+    await mongoose.connect(uri).then(console.log("Connected")).catch((error) => console.error("Mongoose no worky", error)); // Connect
+
+    /* Create a Schema for events */
+    const eventSchema = new mongoose.Schema({ 
+
+        identifier: String,
+        subtitle: String,
+        startTime: Number,
+        Ultra: Boolean,
+
+    });
+
+    const Events = mongoose.model("Event", eventSchema); // Insert event schema into mongoose model
+
+    return Events;
+}
+
+module.exports = intilizeDatabase;
