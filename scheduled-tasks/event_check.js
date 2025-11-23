@@ -3,17 +3,20 @@ const moment = require('moment');  // Import moment lib
 const axios = require('axios'); // Import axios package since I don't want to mess with node version
 
 
-async function event_check(url, eid) {
+async function event_check(url, eid, Events) {
     /* Get data from egg API */
     const data = await axios.get(url+eid).then(r => r.data).catch(error => console.error("Error getting egg API data:", error)); 
 
+    /* Get already sent events from database */
+    const SentEvents = await Events.find().then((r) => r.map((ev) => ev.identifier));
+    console.log(SentEvents);
+
     /* Map through current events */
-    data.events.eventsList.map(event => {
+    await data.events.eventsList.map(async event => {
 
-        let eventStart = moment(event.startTime * 1000); // Convert event start time to moment object
+        // If event identifier not in database
+        if (!(SentEvents.includes(event.identifier))) {
 
-        /* Enter only when event start time is within 59 seconds of now (Little less than 60 so it activates only once) */
-        if (eventStart.isAfter(moment().subtract(59, 'seconds'))) {
 
             let urgency = ""; // Initilize urgency variable
 
@@ -35,7 +38,17 @@ async function event_check(url, eid) {
             const Authorization = Buffer.from(config.ntfyUser + ":" + config.ntfyPass).toString('base64');
 
             /* Post event data to ntfy */
-            axios.post(`${config.ntfyURL}/${config.ntfyThread}`, `New Event Type: \`${event.type}\``, {
+
+            /* Define body string depending on ultra status */
+            let body = ``;
+
+            if (event.ccOnly) {
+
+                body = `New ULTRA Event Type: \`${event.type}\``;
+
+            } else body = `New Event Type: \`${event.type}\``;
+
+            axios.post(`${config.ntfyURL}/${config.ntfyThread}`, body, {
 
                 headers: {
                     "Authorization": `Basic ${Authorization}`,
@@ -49,8 +62,19 @@ async function event_check(url, eid) {
                 console.log(`${event.subtitle} - Sucessfully posted to ntfy`); // Log that event notification was successfully posted.
             }).catch(error => console.error(moment().format('MMMM Do YYYY, h:mm:ssa'), "Error posting to ntfy:", error)); //Give error details if failed
 
+            /* Save sent event to database */
+            let Event = new Events({
 
-        } else console.log(moment().format('MMMM Do YYYY, h:mm:ssa'), event.subtitle, "started more than a minute ago"); // Log when event detected was too long ago
+                identifier: event.identifier,
+                subtitle: event.subtitle,
+                startTime: event.startTime,
+                Ultra: event.ccOnly,
+
+            });
+            await Event.save().catch((error) => console.error("Error saving to mongodb", error));
+
+
+        } else console.log(moment().format('MMMM Do YYYY, h:mm:ssa'), event.subtitle, "already notified"); // Log when event detected was too long ago
 
     });
 

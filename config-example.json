@@ -6,6 +6,8 @@
     "ntfyThread": "Thread Name",
     "ntfyUser": "User",
     "ntfyPass": "Pass",
+    "dbUser": "User",
+    "dbPass": "Pass",
     "urgentTypes": [
         "piggy-cap-boost",
         "mission-duration",
